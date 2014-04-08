@@ -9,9 +9,9 @@ group { "puppet":
 }
 
 class { '::mysql::server':
-  override_options => { 
+  override_options => {
     'mysqld' => {
-      'log-bin'         => 'mysql-bin',
+      'log_bin'         => 'mysql-bin',
       'server-id'       => '1',
       'bind_address'    => '192.168.30.100'
     }
@@ -20,6 +20,9 @@ class { '::mysql::server':
     'repl@%' => {
        ensure           => 'present',
        password_hash    => mysql_password('repl')
+    },
+    'root@192.168.30.1' => {
+       ensure => 'present'
     }
   },
   grants => {
@@ -29,6 +32,13 @@ class { '::mysql::server':
         privileges  => ['REPLICATION SLAVE'],
         table       => '*.*',
         user        => 'repl@%'
+    },
+    'root@192.168.30.1' => {
+       ensure => 'present',
+       options => ['GRANT'],
+       privileges => ['ALL'],
+       table => '*.*',
+       user => 'root@192.168.30.1'
     }
   }
 }

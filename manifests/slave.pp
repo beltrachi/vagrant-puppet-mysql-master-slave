@@ -9,9 +9,24 @@ group { "puppet":
 }
 
 class { '::mysql::server':
-  override_options => { 
+  override_options => {
     'mysqld' => {
-      'server-id' => '2'
+      'server-id' => '2',
+      'bind_address'    => '192.168.30.101'
+    }
+  },
+  users => {
+    'root@192.168.30.1' => {
+       ensure => 'present'
+    }
+  },
+  grants => {
+    'root@192.168.30.1' => {
+       ensure => 'present',
+       options => ['GRANT'],
+       privileges => ['ALL'],
+       table => '*.*',
+       user => 'root@192.168.30.1'
     }
   }
 }
